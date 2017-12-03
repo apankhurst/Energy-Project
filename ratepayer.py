@@ -1,20 +1,18 @@
 import pymongo
 import flask
 
+from flask import Flask
 from pymongo import MongoClient
+
+#app = Flask(__name__)
 
 database_name = 'db'
 
-class RatePayer:
+client = MongoClient()
+appliance_db = client[database_name]
 
-    # Ratepayer constructor
-    def __init__(self):
-        # create a client and get the database
-        self.client = MongoClient()
-        self.appliace_db = self.client['db']
-
-    # post data to the database
-    def post_data(app_type, name, start, end, value):
-
-    def get_by_id(app_id, start_time, end_time):
+# allow appliance to update the data base
+# data will come in the form
+# appliance_id, start_time, end_time, energy_usage
+def post_data(self, app_type, name, start, end, value):
         
