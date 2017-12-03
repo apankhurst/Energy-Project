@@ -47,9 +47,8 @@ def record_data():
         this_appliance = appliance_db.get_collection(appliance_id)
         this_appliance.insert_one(record)
 
+    except:
+        print("Error")
 
-
-
-
-    retval = appliance_id + start_date + end_date + energy
+    retval = appliance_id
     return retval
