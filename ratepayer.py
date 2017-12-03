@@ -32,10 +32,24 @@ def record_data():
     appliance_id = request.args.get('id')
     start_date = request.args.get('start')
     end_date = request.args.get('end')
-    energy = request.args.get('value')
+    energy = request.args.get('energy')
 
     if appliance_id is None or start_date is None or end_date is None or energy is None:
-        return 'ERROR'
+        return 'ARGUMENT ERROR'
+
+    record = {
+        'start': start_date,
+        'end': end_date,
+        'energy': energy
+    }
+
+    try:
+        this_appliance = appliance_db.get_collection(appliance_id)
+        this_appliance.insert_one(record)
+
+
+
+
 
     retval = appliance_id + start_date + end_date + energy
     return retval
