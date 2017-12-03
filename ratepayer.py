@@ -8,8 +8,9 @@ app = Flask(__name__)
 
 database_name = 'db'
 
-client = MongoClient()
-appliance_db = client[database_name]
+client = MongoClient("mongodb://root:CyeX6L2e19AT@ec2-54-165-229-239.compute-1.amazonaws.com:27017")
+appliance_db = client['ratepayer_db']
+applicance_collection = appliance_db['appliances']
 
 # allow appliance to update the data base
 # data will come in the form
