@@ -10,8 +10,8 @@ app = Flask(__name__)
 database_name = 'db'
 
 client = MongoClient("mongodb://root:CyeX6L2e19AT@ec2-54-165-229-239.compute-1.amazonaws.com:27017")
-appliance_db = client['ratepayer_db']
-applicance_collection = appliance_db['appliances']
+db = client['ratepayer_db']
+applicance_collection = db['appliances']
 print(appliance_db.get_collection('app'))
 
 # allow appliance to update the data base
@@ -44,7 +44,7 @@ def record_data():
     }
 
     try:
-        this_appliance = appliance_db.get_collection(appliance_id)
+        this_appliance = db.get_collection(appliance_id + str())
         this_appliance.insert_one(record)
 
     except:
