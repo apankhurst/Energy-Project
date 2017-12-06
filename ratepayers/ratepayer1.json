@@ -1,0 +1,5 @@
+{
+    "database_location": "mongodb://root:CyeX6L2e19AT@ec2-54-165-229-239.compute-1.amazonaws.com:27017",
+    "database_name": "ratepayer_db",
+    "appliance_collection": "appliances"
+}

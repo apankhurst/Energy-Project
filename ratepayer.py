@@ -1,15 +1,25 @@
 import pymongo
 import flask
 import json
+import optparse
 import checking
 
 from flask import Flask
 from flask import request
 from pymongo import MongoClient
 
+# json file that stores all of the info for the 
+database_info_file = 'ratepayers/ratepayer1.json'
+
+with open(database_info_file) as json_data:
+    database_info = json.load(json_data)
+
+
 app = Flask(__name__)
 
-database_name = 'db'
+
+
+
 
 client = MongoClient("mongodb://root:CyeX6L2e19AT@ec2-54-165-229-239.compute-1.amazonaws.com:27017")
 db = client['ratepayer_db']
