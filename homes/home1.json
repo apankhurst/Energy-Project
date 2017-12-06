@@ -1,0 +1,14 @@
+{
+    "home_name": "127.0.0.1",
+    "home_port": "5000",
+    "appliances": [
+	{
+	    "type": "Lightbulb",
+	    "id": "1"
+	},
+	{
+	    "type": "Washing Machine",
+	    "id": "2"
+	}
+    ]
+}
