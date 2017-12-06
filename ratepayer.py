@@ -61,6 +61,9 @@ def record_data():
         return 'ARGUMENT ERROR: Energy below 0'
 
     try:
+        if db.appliances.find({'app_id': appliance_id}) is None:
+            db.appliances.insert({'app_id': appliance_id, 'type': 'unknown'})
+
         this_appliance = db.get_collection(str(appliance_id))
         result = this_appliance.insert_one({
             'start': start_date,
