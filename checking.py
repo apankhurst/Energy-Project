@@ -14,9 +14,13 @@ def valid_datetime(dt):
     try:
         datetime.strptime(dt, dt_format)
     except ValueError:
-        return False
+        print("Date not in ISO format")
 
     # check the date & time are not in the future
     current = datetime.now().strftime(dt_format)
+    if dt <= current:
+        return datetime.strptime(dt, dt_format)
 
-    return dt <= current
+    else:
+        print("date is after the current date/time")
+        raise ValueError
