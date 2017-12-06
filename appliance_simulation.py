@@ -1,8 +1,9 @@
 import json
 import requests
 import datetime
+import urllib
+import random
 
-from random import randint
 from time import sleep
 
 class Appliance:
@@ -13,15 +14,16 @@ class Appliance:
                 self.end_date = datetime.datetime.strptime(info['end'], "%Y-%m-%dT%H:%M")
                 self.host_name = host_name
                 self.host_port = host_port
-
+                self.min = int(info['min'])
+                self.max = int(info['max'])
 
         def can_post(self):
                 return self.current_date < self.end_date                
 
         def post_next(self):
 
-                time = randint(7,13)
-                energy = randint(0, 100)
+                time = random.randint(7,13)
+                energy = random.random(self.min, self.max)
                 start = self.current_date
                 end = self.current_date + datetime.timedelta(seconds=60*time)
 
@@ -32,9 +34,10 @@ class Appliance:
                 end_str = end.strftime("%Y-%m-%dT%H:%M")
                 
                 self.current_date = end
-                host_str = 'http://' + self.host_name + ':' + self.host_port + '/submit'
-                payload = {'id': self.id,'start': str(start_str),'end=': str(end_str),'energy': str(energy)}
+                host_str = 'http://' + self.host_name + ":" + self.host_port + "/submit"
+                payload = {"id": self.id,"start": str(start_str),"end": str(end_str),"energy": str(energy)}
                 r = requests.get(host_str,params=payload)
+                #print(urllib.parse.unquote(r.url))
                 
 class Home:
         def __init__(self, init_file):
@@ -53,5 +56,6 @@ h = Home('appliance_simulation/home1.json')
 for app in h.appliances:
         if app.can_post():
                 app.post_next()
-        sleep(0.1)
+                print('-')
+        sleep(0.5)
                 
