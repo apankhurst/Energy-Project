@@ -8,18 +8,7 @@ from flask import Flask
 from flask import request
 from pymongo import MongoClient
 
-# json file that stores all of the info for the 
-database_info_file = 'ratepayers/ratepayer1.json'
-
-with open(database_info_file) as json_data:
-    database_info = json.load(json_data)
-
-
 app = Flask(__name__)
-
-
-
-
 
 client = MongoClient("mongodb://root:CyeX6L2e19AT@ec2-54-165-229-239.compute-1.amazonaws.com:27017")
 db = client['ratepayer_db']
@@ -56,8 +45,8 @@ def record_data():
 
     
     # check if all parameters are valid
-    if (!(valid_datetime(start_date)) or
-        !(valid_datetime(end_date)) or
+    if (not valid_datetime(start_date) or
+        not valid_datetime(end_date) or
         start_date >= end_date or energy < 0):
         return 'ARGUMENT ERROR'
     
@@ -77,3 +66,11 @@ def record_data():
 
     retval = appliance_id
     return retval
+
+def get_database_info(info_file):
+
+    # json file that stores all of the info for the 
+    with open(database_info_file) as json_data:
+        database_info = json.load(json_data)
+
+    return database_info  
