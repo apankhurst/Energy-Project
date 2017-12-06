@@ -1,21 +1,24 @@
 import requests
+import json
 
 class Appliance:
-    def __init__(self, app_type, app_id, host_name):
-        self.app_type = app_type
-        self.app_id = app_id
-        self.host_name = host_name
-        self.host_port = 5000
+    def __init__(self, init_file):
+
+        # json file that stores all of the info for the
+        with open(init_file) as json_data:
+            info = json.load(json_data)
+
+        self.type = info['type']
+        self.id = info['id']
+        self.host_name = info['host_name']
+        self.host_port = info['host_port']
         
         def post_usage(self, start, end, energy):
-            host_str = 'http://' + str(self.host_name) + ':' + str(self.host_port) + '/submit'
-            payload = {'id': str(self.app_id),'start': str(start),'end=': str(end),'energy': str(energy)}
+            host_str = 'http://' + self.host_name + ':' + self.host_port + '/submit'
+            payload = {'id': self.app_id,'start': str(start),'end=': str(end),'energy': str(energy)}
             
             r = requests.get(host_str,params=payload)
             print(r.url)
             
-            a = Appliance(1,2,'137.165.172.11')
-            a.post_usage('now','later','alot')
 
-a = Appliance(1,1,'137.165.172.11')
-a.post_usage('a','b','c')
+
