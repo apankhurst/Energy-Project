@@ -2,11 +2,16 @@
 from datetime import datetime
 
 def valid_datetime(dt):
+    dt_format = "%Y-%m-%dT%H:%M"
+
     try:
-        datetime.strptime(dt,"%Y-%m-%dT%H:%M")
-        return True
+        datetime.strptime(dt, dt_format)
     except ValueError:
         return False
+
+    current = datetime.now().strftime(dt_format)
+    
+    return dt <= current
 
 def tests():
     test_1 = "2012-12-19T06:01"  
