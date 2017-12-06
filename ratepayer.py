@@ -70,7 +70,7 @@ def record_data():
 def get_database_info(info_file):
 
     # json file that stores all of the info for the 
-    with open(database_info_file) as json_data:
+    with open(info_file) as json_data:
         database_info = json.load(json_data)
 
     return database_info  
