@@ -61,8 +61,7 @@ def record_data():
         return 'ARGUMENT ERROR: Energy below 0'
 
     try:
-        if db.appliances.find({'app_id': appliance_id}) is None:
-            db.appliances.insert({'app_id': appliance_id, 'type': 'unknown'})
+        db.appliances.insert({'app_id': appliance_id, 'type': 'unknown'})
 
         this_appliance = db.get_collection(str(appliance_id))
         result = this_appliance.insert_one({
@@ -82,6 +81,13 @@ def get_total_for_time_window(appliance_id):
     end = valid_datetime(request.args.get('end'))
 
     total = 0.0
+    appliance_type = ''
+    try:
+        metadata = db.get_collection('appliances').find_one({'app_id': appliance_id})
+        appliance_type = metadata['type']
+    except:
+        appliance_type = 'unknown'
+
     try:
         this_appliance = db.get_collection(str(appliance_id))
         returned_entries = this_appliance.find({'start':{'$gte': start}, 'end':{'$lte':end}})
@@ -93,7 +99,12 @@ def get_total_for_time_window(appliance_id):
         print("error")
         return "error"
 
-    return "Total energy:" + str(total)
+    energy_info = {'appliance_id': appliance_id, 'appliance_type': appliance_type, 'energy_total':total}
+    return json.dumps(energy_info)
+
+
+
+
 
 def get_database_info(info_file):
     # json file that stores all of the info for the
