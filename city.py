@@ -36,7 +36,7 @@ def total():
     total = 0.0
     for rp in ratepayers:
         url_str = 'http://' + rp + ":" + ratepayers[rp] + "/total?"
-        payload = "start="+start_str+"&end="end_str
+        payload = "start="+start_str+"&end="+end_str
         print(url_str+payload)
 
 
