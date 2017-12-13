@@ -32,13 +32,30 @@ def total():
 
     start_str = start.strftime("%Y-%m-%dT%H:%M")
     end_str = end.strftime("%Y-%m-%dT%H:%M")
+
+    if(start_str >= end_str):
+        return 'Incorrect dates'
     
     total = 0.0
     for rp in ratepayers:
         url_str = 'http://' + rp + ":" + ratepayers[rp] + "/total?"
         payload = "start="+start_str+"&end="+end_str
-        print(url_str+payload)
 
+        r = requests.get(url_str+payload)
+        response = r.json()
 
+    return 'thank you, come again'
+
+@app.route('/appliances')
+def by_appliance_type():
+    payload = request.args.get('types')
+
+    for rp in ratepayers:
+        url_str = 'http://'+rp+":"+ratepayers[rp]+"ENDPOINT?"
+
+        r = request.get(url+payload)
+        response = r.json()
+        
+    return 'thank you, come again'
 if __name__ == '__main__':
     app.run()
