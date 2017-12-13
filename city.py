@@ -18,9 +18,6 @@ with open(init_file) as json_data:
         ip = r['ip']
         port = r['port']
         ratepayers[ip] = port
-
-for r in ratepayers:
-    print(r + " " + ratepayers[r])
         
 app = Flask(__name__)
 
