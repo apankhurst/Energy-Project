@@ -1,3 +1,4 @@
+import sys
 import json
 import requests
 import datetime
@@ -34,10 +35,9 @@ class Appliance:
                 end_str = end.strftime("%Y-%m-%dT%H:%M")
                 
                 self.current_date = end
-                host_str = 'http://' + self.host_name + ":" + self.host_port + "/submit"
-                payload = {"id": self.id,"start": str(start_str),"end": str(end_str),"energy": str(energy)}
-                r = requests.get(host_str,params=payload)
-                #print(urllib.parse.unquote(r.url))
+                url_str = 'http://'+self.host_name+":"+self.host_port+"/submit?"
+                payload = "id="self.id+"&start="+str(start_str)+"&end="+str(end_str)+"&energy="+str(energy) 
+                r = requests.get(url_str+payload)
                 
 class Home:
         def __init__(self, init_file):
@@ -50,12 +50,18 @@ class Home:
                 home_port = info['home_port']
                 for app in info['appliances']:
                         self.appliances.append(Appliance(home_name, home_port, app))
-                
-h = Home('appliance_simulation/home1.json')
 
-for app in h.appliances:
-        if app.can_post():
-                app.post_next()
-                print('-')
-        sleep(0.5)
+if len(sys.argv < 2):
+        print 'usage: python appliance_simulation.py <config.json>'
+                        
+config_file = sys.argv[1]
+h = Home(config_file)
+
+while h.appliances:
+        for app in h.appliances:
+                if app.can_post():
+                        app.post_next()
+                else:
+                        h.appliances.remove(app)
+                sleep(0.1)
                 
