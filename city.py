@@ -52,24 +52,27 @@ def by_appliance_type():
     start = valid_datetime(request.args.get('start'))
     end = valid_datetime(request.args.get('end'))  
 
+    start_str = start.strftime("%Y-%m-%dT%H:%M")
+    end_str = end.strftime("%Y-%m-%dT%H:%M") 
+    
     type_selected = False
 
     if(start_str >= end_str):
         return 'Incorrect dates'  
 
     try:
-        required_types = request.args.get('types').split(',')
+        required_types = request.args.get('types')
         type_selected = True
     except:
         type_selected = False
         
     for rp in ratepayers:
         url_str = 'http://'+rp+":"+ratepayers[rp]+"/appliance/all"
-
+        payload = "?start="+start_str+"&end="+end_str
         if type_selected:
-            url_str += "?" + required_types
+            payload += "&types=" + required_types
         
-        r = request.get(url+payload)
+        r = requests.get(url_str+payload)
         response = r.json()
         total_apps += int(response['appliances_count'])
         total_enrg += float(response['total_energy'])
