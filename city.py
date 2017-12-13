@@ -43,15 +43,39 @@ def total():
 
     return 'thank you, come again'
 
-@app.route('/appliances')
+@app.route('/appliance/all')
 def by_appliance_type():
-    payload = request.args.get('types')
 
+    total_apps = 0
+    total_enrg = 0.0
+    
+    start = valid_datetime(request.args.get('start'))
+    end = valid_datetime(request.args.get('end'))  
+
+    type_selected = False
+
+    if(start_str >= end_str):
+        return 'Incorrect dates'  
+
+    try:
+        required_types = request.args.get('types').split(',')
+        type_selected = True
+    except:
+        type_selected = False
+        
     for rp in ratepayers:
-        url_str = 'http://'+rp+":"+ratepayers[rp]+"ENDPOINT?"
+        url_str = 'http://'+rp+":"+ratepayers[rp]+"/appliance/all"
 
+        if type_selected:
+            url_str += "?" + required_types
+        
         r = request.get(url+payload)
         response = r.json()
+        total_apps += int(response['appliances_count'])
+        total_enrg += float(response['total_energy'])
+
+    final_info = {'appliances_count': total_apps, 'total_energy': total_enrg}
+    return json.dumps(final_info) 
         
     return 'thank you, come again'
 if __name__ == '__main__':
