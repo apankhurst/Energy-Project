@@ -102,9 +102,32 @@ def get_total_for_time_window(appliance_id):
     energy_info = {'appliance_id': appliance_id, 'appliance_type': appliance_type, 'energy_total':total}
     return json.dumps(energy_info)
 
+@app.route('/appliance/all')
+def get_ratepayer_total():
+    start = valid_datetime(request.args.get('start'))
+    end = valid_datetime(request.args.get('end'))
+    type_selected = False
+    try:
+        required_types = request.args.get('types').split(',')
+        type_selected = True
+    except:
+        type_selected = False
 
+    total = 0.0
+    appliances_count = 0
+    try:
+        for m in db.get_collection('appliances').find():
+            if type_selected is False or(type_selected and m['type'] in required_types):
+                appliances_count = appliances_count + 1
+                this_appliance = db.get_collection(str(m['app_id'])).find({'start':{'$gte': start}, 'end':{'$lte':end}})
+                for e in this_appliance:
+                    total = total + float(e['energy'])
+    except:
+        print("error")
+        return "error"
 
-
+    final_info = {'appliances_count': appliances_count, 'total_energy': total}
+    return json.dumps(final_info)
 
 def get_database_info(info_file):
     # json file that stores all of the info for the
