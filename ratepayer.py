@@ -30,15 +30,6 @@ applicance_collection = db['appliances']
 # appliance_id, start_time, end_time, energy_usage
 # def post_data(self, app_type, name, start, end, value):
 
-@app.route('/')
-def test_method():
-    return 'Hi Ari'
-
-
-@app.route('/hello/<name>')
-def test_name(name):
-    return 'hello ' + str(name)
-
 
 # allow home appliances to submit data to the ratepayer with the REST API
 @app.route('/submit')
@@ -80,6 +71,8 @@ def get_total_for_time_window(appliance_id):
     start = valid_datetime(request.args.get('start'))
     end = valid_datetime(request.args.get('end'))
 
+    assert start<=end, "start date must be before end"
+
     total = 0.0
     appliance_type = ''
     try:
@@ -106,6 +99,7 @@ def get_total_for_time_window(appliance_id):
 def get_ratepayer_total():
     start = valid_datetime(request.args.get('start'))
     end = valid_datetime(request.args.get('end'))
+    assert start <=end, "start date must be before end"
     type_selected = False
     try:
         required_types = request.args.get('types').split(',')
