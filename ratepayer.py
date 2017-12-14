@@ -95,10 +95,12 @@ def get_total_for_time_window(appliance_id):
     energy_info = {'appliance_id': appliance_id, 'appliance_type': appliance_type, 'energy_total':total}
     return json.dumps(energy_info)
 
-@app.route('/appliance/all')
+@app.route('/appliances/all')
 def get_ratepayer_total():
     start = valid_datetime(request.args.get('start'))
     end = valid_datetime(request.args.get('end'))
+    return_power = request.args.get('power')
+    print(return_power)
     assert start <=end, "start date must be before end"
     type_selected = False
     try:
@@ -119,8 +121,14 @@ def get_ratepayer_total():
     except:
         print("error")
         return "error"
-
-    final_info = {'appliances_count': appliances_count, 'total_energy': total}
+    if return_power is "true":
+        timediff = (end - start)
+        hours_in_window = (timediff.total_seconds()) / 3600.0
+        print(str(hours_in_window))
+        power = total / hours_in_window
+        final_info = {'appliances_count': appliances_count, 'total_power': power}
+    else:
+        final_info = {'appliances_count': appliances_count, 'total_energy': total}
     return json.dumps(final_info)
 
 @app.route('/appliances/list')

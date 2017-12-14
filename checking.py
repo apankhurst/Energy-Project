@@ -5,7 +5,7 @@ from datetime import datetime
 # check if a passed date and time is value
 # a datetime will be invalid if it doesn't fit the standard format or if it is
 # larger than the current date
-def valid_datetime(dt):
+def valid_datetime(dt: object) -> object:
 
     # the ISODate format string
     dt_format = "%Y-%m-%dT%H:%M"
