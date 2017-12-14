@@ -15,6 +15,23 @@ with open(config_file) as json_data:
     for level in info:
         levels[level] = info[level]
     
+def get_by_name(level, name):
+    if levels[level] is None:
+        print("level doesn't exist")
+        return {}
+    
+    lev = levels[level]
+    select = {}
+    
+    for l in lev:
+        if l['name'] == name:
+            select = l
+            break
+        
+    if select == {}:
+        print(name + " doesn't exist")
+    return select
+    
 def print_levels():
     for level in levels:
         if levels[level]:
@@ -25,22 +42,11 @@ def view(level):
         print(l['name'])
 
 def appliances(level,name,appliances):
-    if levels[level] is None:
-        print("level doesn't exist")
-        return 
 
-    lev = levels[level]
-    select = {}
-    
-    for l in lev:
-        if l['name'] == name:
-            select = l
-            break
-
+    select = get_by_name(level,name)
     if select == {}:
-        print(name + " doesn't exist")
-        return
-
+        return 
+    
     ip = select['ip']
     port = select['port']
     
@@ -72,6 +78,19 @@ def help():
     print('view <level> - view all available elements at <level>')
     print('appliances <level> <name> <app1> ... - get number of appliances and total energy useage for specified appliances')
     print('quit')
+
+print("Welcome to DEDASS!")
+print("D.E.D.A.S.S")
+print("E.N.A.G.T.Y")
+print("D.E.T.G.O.S")
+print("A.R.A.R.R.T")
+print("S.G. .E.A.E")
+print("S.Y. .G.G.M")
+print(" . . .A.E. ")
+print(" . . .T. . ")
+print(" . . .I. . ")
+print(" . . .O. . ")
+print(" . . .N. . ")
     
 while True:
     try:
