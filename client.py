@@ -44,9 +44,11 @@ def contact_endpoint(endpoint,level,name,filters):
         url_str = "http://"+ip+":"+port+endpoint
         payload = "?start="+s+"&end="+e
 
-        if filters:
-            payload += "&types="+",".join(filters)
-            
+        if filters is not None:
+            payload += filters
+
+
+        print(url_str+payload)
         r = requests.get(url_str+payload)
         return r.json
         
@@ -63,15 +65,30 @@ def view(level):
         print(l['name'])
 
 
-def appliances(level,name,appliances):
-    response = contact_endpoint("/appliances/all",level,name,appliances)
-    print("Total Devices: " + response['appliances_count'])
-    print("Total Energy Usage: " + respnse['total_energy'])
+def energy(level,name,appliances):
+    filters = None
+    if appliances:
+        filters = "&types="+",".join(appliances)
     
+    response = contact_endpoint("/appliances/all",level,name,filters)
+    print("Total Devices: " + response['appliances_count'])
+    print("Total Energy Usage: " + response['total_energy'])
+    print("Average Energy Usage: " + response['average_energy'])
+
+def power(level,name,appliances):
+    filters = '&power=True'
+    if appliances:
+        filters = "&types="+",".join(appliances)
+        
+        response = contact_endpoint("/appliances/all",level,name,filters)
+        print("Total Devices: " + response['appliances_count'])
+        print("Total Power Usage: " + response['total_power'])
+        
 def help():
     print('levels - print the levels available for query')
     print('view <level> - view all available elements at <level>')
-    print('appliances <level> <name> <app1> ... - get number of appliances and total energy useage for specified appliances')
+    print('energy <level> <name> <app1> ... - get number of appliances and total energy useage for specified appliances')
+    print('power <level> <name> <app1> ... - get number of appliances and total energy useage for specified appliances') 
     print('quit')
 
 if len(sys.argv) < 2:
@@ -113,11 +130,16 @@ while True:
                 view(ans[1])
             else:
                 print('please provide parameter')
-        elif c == 'appliances':
+        elif c == 'energy':
             if len(ans) > 2:
-                appliances(ans[1], ans[2], ans[3:])
+                energy(ans[1], ans[2], ans[3:])
             else:
                 print('please provide parameters')
+        elif c == 'power':
+            if len(ans) > 2:
+                power(ans[1], ans[2], ans[3:])
+            else:
+                print('please provide parameters') 
         elif c == 'quit':
             print("Thank you for using DEDASS!")
             break
