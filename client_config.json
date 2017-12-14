@@ -1,7 +1,38 @@
 {
-    "countries": [],
-    "states": [],
-    "counties":[],
+    "countries":
+    [
+	{
+	    "name" : "USA",
+	    "ip": "127.0.0.1",
+	    "port": "5000"
+	}
+    ],
+    "states":
+    [
+	{
+	    "name" : "texas",
+	    "ip": "127.0.0.1",
+	    "port": "5000"
+	},
+	{
+	    "name" : "california",
+	    "ip": "127.0.0.1",
+	    "port": "5000"
+	}   
+    ],
+    "counties":
+    [
+	{
+	    "name" : "travis",
+	    "ip": "127.0.0.1",
+	    "port": "5000" 
+	},
+	{
+	    "name" : "alameda",
+	    "ip": "127.0.0.1",
+	    "port": "5000"
+	}
+    ],
     "cities":
     [
         {

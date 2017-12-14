@@ -4,17 +4,6 @@ import sys
 
 from checking import valid_datetime
 
-if len(sys.argv) < 2:
-    print('usage: python client.py <config.json>')
-
-levels = {}
-
-config_file = sys.argv[1]
-with open(config_file) as json_data:
-    info = json.load(json_data)
-    for level in info:
-        levels[level] = info[level]
-    
 def get_by_name(level, name):
     if levels[level] is None:
         print("level doesn't exist")
@@ -31,18 +20,8 @@ def get_by_name(level, name):
     if select == {}:
         print(name + " doesn't exist")
     return select
-    
-def print_levels():
-    for level in levels:
-        if levels[level]:
-            print(level)
 
-def view(level):
-    for l in levels[level]:
-        print(l['name'])
-
-def appliances(level,name,appliances):
-
+def contact_endpoint(endpoint,level,name,filters):
     select = get_by_name(level,name)
     if select == {}:
         return 
@@ -62,23 +41,53 @@ def appliances(level,name,appliances):
             print('please make sure your dates are in the right order')
             return
 
-        url_str = "http://"+ip+":"+port+"/appliance/all"
+        url_str = "http://"+ip+":"+port+endpoint
         payload = "?start="+s+"&end="+e
 
-        if appliances:
-            payload += "&types="+",".join(appliances)
+        if filters:
+            payload += "&types="+",".join(filters)
             
-        print(url_str+payload)
-            
+        r = requests.get(url_str+payload)
+        return r.json
+        
     except ValueError:
         return 
 
+def print_levels():
+    for level in levels:
+        if levels[level]:
+            print(level)
+
+def view(level):
+    for l in levels[level]:
+        print(l['name'])
+
+
+def appliances(level,name,appliances):
+    response = contact_endpoint("/appliances/all",level,name,appliances)
+    print("Total Devices: " + response['appliances_count'])
+        print("Total Devices: " + response['appliances_count'])
+        print("Total Energy Usage: " + respnse['total_energy'])
+    
 def help():
     print('levels - print the levels available for query')
     print('view <level> - view all available elements at <level>')
     print('appliances <level> <name> <app1> ... - get number of appliances and total energy useage for specified appliances')
     print('quit')
 
+if len(sys.argv) < 2:
+    print('usage: python client.py <config.json>')
+
+levels = {}
+
+config_file = sys.argv[1]
+with open(config_file) as json_data:
+    info = json.load(json_data)
+    for level in info:
+        levels[level] = info[level]
+    
+
+    
 print("Welcome to DEDASS!")
 print("D.E.D.A.S.S")
 print("E.N.A.G.T.Y")
