@@ -47,11 +47,17 @@ def total():
 def by_appliance_type():
 
     total_apps = 0
-    total_enrg = 0.0
+    total =  0.0
     
     start = valid_datetime(request.args.get('start'))
     end = valid_datetime(request.args.get('end'))  
+    return_power = request.args.get('power')
 
+    if return_power == 'true':
+        return_power = True
+    else:
+        return_power = False
+    
     start_str = start.strftime("%Y-%m-%dT%H:%M")
     end_str = end.strftime("%Y-%m-%dT%H:%M") 
     
@@ -69,17 +75,29 @@ def by_appliance_type():
     for rp in ratepayers:
         url_str = 'http://'+rp+":"+ratepayers[rp]+"/appliance/all"
         payload = "?start="+start_str+"&end="+end_str
+
         if type_selected:
             payload += "&types=" + required_types
-        
+        if return_power:
+            payload += "&power=True"
+            
         r = requests.get(url_str+payload)
         response = r.json()
-        total_apps += int(response['appliances_count'])
-        total_enrg += float(response['total_energy'])
 
-    final_info = {'appliances_count': total_apps, 'total_energy': total_enrg}
+        if return_power:
+            total += float(response['total_power'])
+        else:
+            total += float(response['total_energy'])
+
+        total_apps += int(response['appliances_count'])
+
+        
+    if return_power:
+        final_info = {'appliances_count': total_apps, 'total_power': total}
+    else:
+        final_info = {'appliances_count': total_apps, 'total_energy': total} 
+
     return json.dumps(final_info) 
         
-    return 'thank you, come again'
 if __name__ == '__main__':
     app.run()
