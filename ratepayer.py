@@ -123,6 +123,19 @@ def get_ratepayer_total():
     final_info = {'appliances_count': appliances_count, 'total_energy': total}
     return json.dumps(final_info)
 
+@app.route('/appliances/list')
+def list_appliances():
+    appliances_list = []
+    try:
+        for m in db.get_collection('appliances').find():
+            appliances_list.append({'appliance_id': m['app_id'], 'type':m['type']})
+
+    except:
+        print('error')
+
+    return json.dumps(appliances_list)
+
+
 def get_database_info(info_file):
     # json file that stores all of the info for the
     with open(info_file) as json_data:
