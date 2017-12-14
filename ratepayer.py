@@ -13,16 +13,35 @@ format_string = "%Y-%m-%dT%H:%M"
 
 app = Flask(__name__)
 
+init_file = "ratepayer_config.json"
+
+username = ""
+password = ""
+uri = ""
+database = ""
+collection = ""
+
+with open(init_file) as json_data:
+    info = json.load(json_data)
+    username = info['username']
+    password = info['password']
+    uri = info['uri'] % (quote_plus(username), quote_plus(password))
+    database = info['database']
+    collection = info['collection']
+
+#DELETE THIS LATER
+"""    
 username = "root"
 password = "CyeX6L2e19AT"
 hostname = ""
 uri = "mongodb://%s:%s@ec2-54-165-229-239.compute-1.amazonaws.com/ratepayer_db?authsource=admin" % (
     quote_plus(username), quote_plus(password))
+"""
 # Should remove connect=True after testing is done
 client = MongoClient(uri)
 
-db = client['ratepayer_db']
-applicance_collection = db['appliances']
+db = client[database]
+applicance_collection = db[collection]
 
 
 # allow appliance to update the data base
@@ -142,11 +161,3 @@ def list_appliances():
         print('error')
 
     return json.dumps(appliances_list)
-
-
-def get_database_info(info_file):
-    # json file that stores all of the info for the
-    with open(info_file) as json_data:
-        database_info = json.load(json_data)
-
-    return database_info

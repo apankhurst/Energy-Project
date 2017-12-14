@@ -1,0 +1,7 @@
+{
+    "username": "root",
+    "password": "CyeX6L2e19AT",
+    "uri": "mongodb://%s:%s@ec2-54-165-229-239.compute-1.amazonaws.com/ratepayer_db?authsource=admin",
+    "database": "ratepayer1",
+    "collection": "appliances"
+}
