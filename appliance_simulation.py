@@ -24,7 +24,7 @@ class Appliance:
         def post_next(self):
 
                 time = random.randint(7,13)
-                energy = random.random(self.min, self.max)
+                energy = random.uniform(self.min, self.max)
                 start = self.current_date
                 end = self.current_date + datetime.timedelta(seconds=60*time)
 
@@ -36,7 +36,7 @@ class Appliance:
                 
                 self.current_date = end
                 url_str = 'http://'+self.host_name+":"+self.host_port+"/submit?"
-                payload = "id="self.id+"&start="+str(start_str)+"&end="+str(end_str)+"&energy="+str(energy) 
+                payload = "id="+self.id+"&start="+str(start_str)+"&end="+str(end_str)+"&energy="+str(energy) 
                 r = requests.get(url_str+payload)
                 
 class Home:
@@ -51,8 +51,8 @@ class Home:
                 for app in info['appliances']:
                         self.appliances.append(Appliance(home_name, home_port, app))
 
-if len(sys.argv < 2):
-        print 'usage: python appliance_simulation.py <config.json>'
+if len(sys.argv) < 2:
+        print('usage: python appliance_simulation.py <config.json>')
                         
 config_file = sys.argv[1]
 h = Home(config_file)
