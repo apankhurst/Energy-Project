@@ -1,0 +1,20 @@
+{
+    "countries": [],
+    "states": [],
+    "counties":[],
+    "cities":
+    [
+        {
+            "name" : "williamstown",
+            "ip": "127.0.0.1",
+            "port": "5000"
+        },
+
+        {
+            "name": "austin",
+            "ip": "137.165.0.1",
+            "port": "5000"
+        }
+    ]
+    
+}
