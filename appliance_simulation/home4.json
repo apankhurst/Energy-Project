@@ -3,12 +3,12 @@
     "home_port": "5000",
     "appliances": [
 	{
-	    "type": "Lightbulb",
+	    "type": "Oven",
 	    "id": "1",
 	    "start": "2017-01-01T00:01",
 	    "end": "2017-01-30T23:59",
 	    "min": "0",
-	    "max": "100"
+	    "max": "50"
 	},
 	{
 	    "type": "Washing Machine",
@@ -19,12 +19,12 @@
 	    "max": "200"
 	},
 	{
-	    "type": "Oven",
+	    "type": "TV",
 	    "id": "3",
 	    "start": "2017-01-01T00:01",
 	    "end": "2017-01-30T23:59",
 	    "min": "0",
-	    "max": "50"
+	    "max": "400"
 	},
 	{
 	    "type": "Lightbulb",
@@ -33,6 +33,14 @@
 	    "end": "2017-01-30T23:59",
 	    "min": "0",
 	    "max": "100"
+	},
+	{
+	    "type": "Washing Machine",
+	    "id": "5",
+	    "start": "2017-01-01T00:01",
+	    "end": "2017-01-30T23:59",
+	    "min": "100",
+	    "max": "200"
 	}
     ]
 }
