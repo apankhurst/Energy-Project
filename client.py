@@ -66,8 +66,7 @@ def view(level):
 def appliances(level,name,appliances):
     response = contact_endpoint("/appliances/all",level,name,appliances)
     print("Total Devices: " + response['appliances_count'])
-        print("Total Devices: " + response['appliances_count'])
-        print("Total Energy Usage: " + respnse['total_energy'])
+    print("Total Energy Usage: " + respnse['total_energy'])
     
 def help():
     print('levels - print the levels available for query')
