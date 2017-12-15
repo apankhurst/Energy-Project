@@ -60,29 +60,22 @@ def by_appliance_type():
     
     start_str = start.strftime("%Y-%m-%dT%H:%M")
     end_str = end.strftime("%Y-%m-%dT%H:%M") 
-    
-    type_selected = False
+
 
     if(start_str >= end_str):
         return 'Incorrect dates'  
 
-    try:
-        required_types = request.args.get('types')
-        type_selected = True
-    except:
-        type_selected = False
+    required_types = request.args.get('types')
 
     for rp in ratepayers:
-        url_str = 'http://'+rp+":"+ratepayers[rp]+"/appliance/all"
+        url_str = 'http://'+rp+":"+ratepayers[rp]+"/appliances/all"
         payload = "?start="+start_str+"&end="+end_str
-
-        print(url_str+payload)
 
         if required_types is not None:
             payload += "&types=" + required_types
         if return_power:
-            payload += "&power=True"
-            
+            payload += "&power=true"
+
         r = requests.get(url_str+payload)
         response = r.json()
 
