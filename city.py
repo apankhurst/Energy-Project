@@ -43,7 +43,7 @@ def total():
 
     return 'thank you, come again'
 
-@app.route('/appliance/all')
+@app.route('/appliances/all')
 def by_appliance_type():
 
     total_apps = 0
@@ -71,12 +71,14 @@ def by_appliance_type():
         type_selected = True
     except:
         type_selected = False
-        
+
     for rp in ratepayers:
         url_str = 'http://'+rp+":"+ratepayers[rp]+"/appliance/all"
         payload = "?start="+start_str+"&end="+end_str
 
-        if type_selected:
+        print(url_str+payload)
+
+        if required_types is not None:
             payload += "&types=" + required_types
         if return_power:
             payload += "&power=True"
