@@ -141,9 +141,11 @@ def get_ratepayer_total():
     type_selected = False
     try:
         #Allows user to specify a list of device types separated by commas
+        print("1")
         required_types = request.args.get('types').split(',')
         type_selected = True
     except:
+        print("2")
         type_selected = False
 
     total = 0.0
