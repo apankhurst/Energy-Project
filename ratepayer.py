@@ -170,3 +170,6 @@ def list_appliances():
         print('error')
 
     return json.dumps(appliances_list)
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
