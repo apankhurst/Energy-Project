@@ -13,6 +13,7 @@ format_string = "%Y-%m-%dT%H:%M"
 
 app = Flask(__name__)
 
+# initalize the ratepayer from a config file
 init_file = "ratepayer_config.json"
 
 username = ""
@@ -29,17 +30,9 @@ with open(init_file) as json_data:
     database = info['database']
     collection = info['collection']
 
-#DELETE THIS LATER
-"""    
-username = "root"
-password = "CyeX6L2e19AT"
-hostname = ""
-uri = "mongodb://%s:%s@ec2-54-165-229-239.compute-1.amazonaws.com/ratepayer_db?authsource=admin" % (
-    quote_plus(username), quote_plus(password))
-"""
-# Should remove connect=True after testing is done
-client = MongoClient(uri)
 
+# setup the connection to the database
+client = MongoClient(uri)
 db = client[database]
 applicance_collection = db[collection]
 

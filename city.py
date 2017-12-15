@@ -6,11 +6,12 @@ from flask import Flask
 from flask import request
 from checking import valid_datetime
 
-# This file contains a list of the IPs
-# of the rate payers below the city
 ratepayers = {}
 
+# This file contains a list of the IPs
+# of the rate payers below the city
 init_file = "city_config.json"
+
 with open(init_file) as json_data:
     info = json.load(json_data)
     
@@ -21,34 +22,15 @@ with open(init_file) as json_data:
         
 app = Flask(__name__)
 
-@app.route('/total')
-def total():
-
-    start = valid_datetime(request.args.get('start'))
-    end = valid_datetime(request.args.get('end'))
-
-    start_str = start.strftime("%Y-%m-%dT%H:%M")
-    end_str = end.strftime("%Y-%m-%dT%H:%M")
-
-    if(start_str >= end_str):
-        return 'Incorrect dates'
-    
-    total = 0.0
-    for rp in ratepayers:
-        url_str = 'http://' + rp + ":" + ratepayers[rp] + "/total?"
-        payload = "start="+start_str+"&end="+end_str
-
-        r = requests.get(url_str+payload)
-        response = r.json()
-
-    return 'thank you, come again'
-
+# this end point will gather all of the requested data from
+# the ratepayers below it and send it as a json object to the requester
 @app.route('/appliances/all')
 def by_appliance_type():
 
-    total_apps = 0
-    total =  0.0
-    
+    total_apps = 0 # total number of appliances
+    total =  0.0 # total energy/power used
+
+    # get the parameters from the request
     start = valid_datetime(request.args.get('start'))
     end = valid_datetime(request.args.get('end'))  
     return_power = request.args.get('power')
@@ -61,12 +43,14 @@ def by_appliance_type():
     start_str = start.strftime("%Y-%m-%dT%H:%M")
     end_str = end.strftime("%Y-%m-%dT%H:%M") 
 
-
+    # determine if the dates are correct
     if(start_str >= end_str):
         return 'Incorrect dates'  
 
     required_types = request.args.get('types')
 
+    # construct the API call and send it to each ratepayer
+    # get the responses and aggregate them
     for rp in ratepayers:
         url_str = 'http://'+rp+":"+ratepayers[rp]+"/appliances/all"
         payload = "?start="+start_str+"&end="+end_str
@@ -86,7 +70,7 @@ def by_appliance_type():
 
         total_apps += int(response['appliances_count'])
 
-        
+    # send the response to the caller
     if return_power:
         final_info = {'appliances_count': total_apps, 'total_power': total}
     else:
