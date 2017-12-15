@@ -50,7 +50,7 @@ applicance_collection = db[collection]
 # def post_data(self, app_type, name, start, end, value):
 
 
-# allow home appliances to submit data to the ratepayer with the REST API
+# allow ratepayer's appliances to submit data to the ratepayer with the REST API
 @app.route('/submit')
 def record_data():
     # get the passed parameters
@@ -71,7 +71,7 @@ def record_data():
         return 'ARGUMENT ERROR: Energy below 0'
 
     try:
-        db.appliances.insert({'app_id': appliance_id, 'type': 'unknown'})
+        db.appliances.update({'app_id': appliance_id}, {'app_id': appliance_id, 'type': 'unknown'}, upsert=True)
 
         this_appliance = db.get_collection(str(appliance_id))
         result = this_appliance.insert_one({
@@ -84,6 +84,8 @@ def record_data():
 
     return "success"
 
+#Get energy sum for a specific appliance ID belonging to this ratepayer.
+#Start and end date must be supplied in the query string.
 @app.route('/appliance/<appliance_id>')
 def get_total_for_time_window(appliance_id):
     assert str(appliance_id) in db.collection_names(), 'The database does not have any data for the given appliance'
@@ -99,7 +101,7 @@ def get_total_for_time_window(appliance_id):
         appliance_type = metadata['type']
     except:
         appliance_type = 'unknown'
-
+    #filter energy records by time at the database before returning them to the application
     try:
         this_appliance = db.get_collection(str(appliance_id))
         returned_entries = this_appliance.find({'start':{'$gte': start}, 'end':{'$lte':end}})
@@ -110,31 +112,40 @@ def get_total_for_time_window(appliance_id):
     except:
         print("error")
         return "error"
-
+    #Create return string if the user requested power instead of energy
     if return_power == "true":
         timediff = (end - start)
         hours_in_window = (timediff.total_seconds()) / 3600.0
         print(str(hours_in_window))
         power = total / hours_in_window
         energy_info = {'appliance_id': appliance_id, 'appliance_type': appliance_type, 'power_total':power}
+    #Create return string if the user did not specify that power should be returned instead of energy
     else:
         energy_info = {'appliance_id': appliance_id, 'appliance_type': appliance_type, 'energy_total':total}
 
     return json.dumps(energy_info)
 
+#Get energy sum for all appliances belonging to this ratepayer.
+#Start and end date must be supplied in the query string.
+#If 'power=true' is supplied in the query string, power is returned instead of energy.
 @app.route('/appliances/all')
 def get_ratepayer_total():
+    #Get query string parameters
     start = valid_datetime(request.args.get('start'))
     end = valid_datetime(request.args.get('end'))
     return_power = request.args.get('power')
+
     print(return_power)
     print(return_power == 'true')
     assert start <=end, "start date must be before end"
     type_selected = False
     try:
+        #Allows user to specify a list of device types separated by commas
+        print("1")
         required_types = request.args.get('types').split(',')
         type_selected = True
     except:
+        print("2")
         type_selected = False
 
     total = 0.0
@@ -149,16 +160,22 @@ def get_ratepayer_total():
     except:
         print("error")
         return "error"
+    #Create return string if the user requested power instead of energy
     if return_power == "true":
         timediff = (end - start)
         hours_in_window = (timediff.total_seconds()) / 3600.0
         print(str(hours_in_window))
         power = total / hours_in_window
         final_info = {'appliances_count': appliances_count, 'total_power': power}
+    #Create return string if the user did not specify that power should be returned instead of energy
     else:
         final_info = {'appliances_count': appliances_count, 'total_energy': total}
     return json.dumps(final_info)
 
+
+#Get list of all appliances belonging to this ratepayer.
+#Appliance ID and appliance type are returned for each appliance.
+#No energy data is returned.
 @app.route('/appliances/list')
 def list_appliances():
     appliances_list = []
