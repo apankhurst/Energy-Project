@@ -72,7 +72,7 @@ def contact_endpoint(endpoint,level,name,filters):
         # contact the endpoint   
         print(url_str+payload)
         r = requests.get(url_str+payload)
-        return r.json
+        return r.json()
 
 
     except ValueError:
@@ -101,21 +101,21 @@ def energy(level,name,appliances):
         filters = "&types="+",".join(appliances)
     try:
         response = contact_endpoint("/appliances/all",level,name,filters)
-        print("total Devices: " + response['appliances_count'])
-        print("total Energy Usage: " + response['total_energy'])
-        print("average Energy Usage: " + response['average_energy'])
+        print(response)
+
     except TypeError:
         print('error ocurred')
 # get the total # of devices for a level and
 # their total power usage
 def power(level,name,appliances):
-    filters = '&power=True'
+    filters = '&power=true'
     if len(appliances) > 0:
         filters += "&types="+",".join(appliances)
     try:
         response = contact_endpoint("/appliances/all",level,name,filters)
-        print("total Devices: " + response['appliances_count'])
-        print("total Power Usage: " + response['total_power'])
+        print(response)
+
+
     except TypeError:
         print('error ocurred')
 
