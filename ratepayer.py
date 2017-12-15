@@ -67,7 +67,7 @@ def record_data():
         return 'ARGUMENT ERROR: Missing arguments'
 
     # check if all parameters are valid
-    if int(energy) < 0:
+    if float(energy) < 0:
         return 'ARGUMENT ERROR: Energy below 0'
 
     try:
