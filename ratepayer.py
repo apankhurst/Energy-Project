@@ -132,9 +132,11 @@ def get_ratepayer_total():
     assert start <=end, "start date must be before end"
     type_selected = False
     try:
+        print("1")
         required_types = request.args.get('types').split(',')
         type_selected = True
     except:
+        print("2")
         type_selected = False
 
     total = 0.0
